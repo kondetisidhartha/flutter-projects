@@ -23,16 +23,7 @@ class MyApp extends StatelessWidget {
         textTheme: GoogleFonts.latoTextTheme(),
         scaffoldBackgroundColor: const Color.fromARGB(255, 50, 58, 60),
       ),
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text(
-            "Your Groceries",
-            style: Theme.of(context).textTheme.headlineSmall!.copyWith(
-                color: Theme.of(context).colorScheme.primaryContainer),
-          ),
-        ),
-        body: const HomeScreen(),
-      ),
+      home: const HomeScreen(),
     );
   }
 }
