@@ -16,6 +16,8 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   List<GroceryItem> _groceryItems = [];
+  var _isLoading = true;
+  String? _error;
 
   @override
   void initState() {
@@ -24,36 +26,48 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _loadItems() async {
-    final url = Uri.https(
-        'flutter-prep-316f3-default-rtdb.firebaseio.com', 'shopping-list.json');
-    final response = await http.get(url);
-    final Map<String, dynamic> listData = json.decode(response.body);
-    final List<GroceryItem> loadedListItems = [];
-    for (final item in listData.entries) {
-      final categoryItem = categories.entries.firstWhere(
-        (catItem) => catItem.value.categoryName == item.value["category"],
-      );
-      loadedListItems.add(
-        GroceryItem(
-          id: item.key,
-          name: item.value["name"],
-          quantity: item.value["quantity"],
-          category: categoryItem.value,
-        ),
-      );
+    try {
+      final url = Uri.https('flutter-prep-316f3-default-rtdb.firebaseio.com',
+          'shopping-list.json');
+      final response = await http.get(url);
+
+      final Map<String, dynamic> listData = json.decode(response.body);
+      final List<GroceryItem> loadedListItems = [];
+      for (final item in listData.entries) {
+        final categoryItem = categories.entries.firstWhere(
+          (catItem) => catItem.value.categoryName == item.value["category"],
+        );
+        loadedListItems.add(
+          GroceryItem(
+            id: item.key,
+            name: item.value["name"],
+            quantity: item.value["quantity"],
+            category: categoryItem.value,
+          ),
+        );
+      }
+      setState(() {
+        _groceryItems = loadedListItems;
+        _isLoading = false;
+      });
+    } catch (error) {
+      setState(() {
+        _isLoading = false;
+        _error = "check the url.";
+      });
     }
-    setState(() {
-      _groceryItems = loadedListItems;
-    });
   }
 
   void _loadAddItemScreen() async {
-    await Navigator.of(context).push<GroceryItem>(
+    final newItem = await Navigator.of(context).push<GroceryItem>(
       MaterialPageRoute(
         builder: (ctx) => const NewItemScreen(),
       ),
     );
-    _loadItems();
+    if (newItem == null) return;
+    setState(() {
+      _groceryItems.add(newItem);
+    });
   }
 
   @override
@@ -74,18 +88,34 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-      body: _groceryItems.isEmpty
-          ? Center(
-              child: Text(
-                "No items found.",
-                style: Theme.of(context).textTheme.headlineMedium!.copyWith(
-                      color: Theme.of(context).colorScheme.onBackground,
-                    ),
-              ),
+      body: _isLoading
+          ? const Center(
+              child: CircularProgressIndicator(),
             )
-          : GroceryList(
-              groceryItems: _groceryItems,
-            ),
+          : _error != null
+              ? Center(
+                  child: Text(
+                    _error!,
+                    style: Theme.of(context).textTheme.headlineMedium!.copyWith(
+                          color: Theme.of(context).colorScheme.onBackground,
+                        ),
+                  ),
+                )
+              : _groceryItems.isEmpty
+                  ? Center(
+                      child: Text(
+                        "No items found.",
+                        style: Theme.of(context)
+                            .textTheme
+                            .headlineMedium!
+                            .copyWith(
+                              color: Theme.of(context).colorScheme.onBackground,
+                            ),
+                      ),
+                    )
+                  : GroceryList(
+                      groceryItems: _groceryItems,
+                    ),
     );
   }
 }
