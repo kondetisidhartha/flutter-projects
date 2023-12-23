@@ -33,6 +33,10 @@ class PlacesList extends ConsumerWidget {
             itemCount: addedPlaces.length,
             itemBuilder: (ctx, index) {
               return ListTile(
+                leading: CircleAvatar(
+                  radius: 20,
+                  backgroundImage: FileImage(addedPlaces[index].image),
+                ),
                 onTap: () => showPlaceDetails(addedPlaces[index]),
                 title: Text(addedPlaces[index].name),
               );
