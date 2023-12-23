@@ -1,4 +1,5 @@
 import 'package:favourite_places/models/place.dart';
+import 'package:favourite_places/utils/custom_colors.dart';
 import 'package:flutter/material.dart';
 
 class PlaceDetailScreen extends StatelessWidget {
@@ -12,7 +13,12 @@ class PlaceDetailScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text(place.name),
       ),
-      body: Text(place.name),
+      body: Center(
+        child: Text(
+          place.name,
+          style: bodyMediumOnBackground(context),
+        ),
+      ),
     );
   }
 }

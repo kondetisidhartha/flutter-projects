@@ -1,37 +1,46 @@
 import 'package:favourite_places/providers/places_provider.dart';
+import 'package:favourite_places/utils/custom_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class AddPlaceScreen extends ConsumerWidget {
+class AddPlaceScreen extends ConsumerStatefulWidget {
   const AddPlaceScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final formKey = GlobalKey<FormState>();
-    String enteredPlace = "";
+  ConsumerState<ConsumerStatefulWidget> createState() {
+    return _AddPlaceScreenState();
+  }
+}
 
-    void savePlace() {
-      if (formKey.currentState!.validate()) {
-        formKey.currentState!.save();
-        ref.read(placesProvider.notifier).updatePlaces(enteredPlace);
-        Navigator.of(context).pop();
-      }
+class _AddPlaceScreenState extends ConsumerState<AddPlaceScreen> {
+  final _formKey = GlobalKey<FormState>();
+  String _enteredPlace = "";
+
+  void savePlace() {
+    if (_formKey.currentState!.validate()) {
+      _formKey.currentState!.save();
+      ref.read(placesProvider.notifier).updatePlaces(_enteredPlace);
+      Navigator.of(context).pop();
     }
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Add place"),
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(12.0),
         child: Form(
-          key: formKey,
+          key: _formKey,
           child: Column(
             children: [
               TextFormField(
                 decoration: const InputDecoration(
                   label: Text("Add place"),
                 ),
+                style: titleMediumOnBackground(context),
                 maxLength: 50,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -40,7 +49,7 @@ class AddPlaceScreen extends ConsumerWidget {
                   return null;
                 },
                 onSaved: (value) {
-                  enteredPlace = value!;
+                  _enteredPlace = value!;
                 },
               ),
               const SizedBox(height: 12),

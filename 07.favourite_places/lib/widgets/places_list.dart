@@ -1,6 +1,7 @@
 import 'package:favourite_places/models/place.dart';
 import 'package:favourite_places/providers/places_provider.dart';
 import 'package:favourite_places/screens/place_detail.dart';
+import 'package:favourite_places/utils/custom_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -22,8 +23,11 @@ class PlacesList extends ConsumerWidget {
     }
 
     return addedPlaces.isEmpty
-        ? const Center(
-            child: Text('No places to show.'),
+        ? Center(
+            child: Text(
+              'No places to show.',
+              style: bodyMediumOnBackground(context),
+            ),
           )
         : ListView.builder(
             itemCount: addedPlaces.length,

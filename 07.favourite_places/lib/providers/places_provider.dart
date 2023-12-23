@@ -10,7 +10,7 @@ class PlacesNotifier extends StateNotifier<List<Place>> {
   void updatePlaces(String place) {
     state = [
       ...state,
-      Place(id: uuid.v4(), name: place),
+      Place(name: place),
     ];
   }
 }
