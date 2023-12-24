@@ -65,7 +65,7 @@ class _AddPlaceScreenState extends ConsumerState<AddPlaceScreen> {
                 _selectedImage = image;
               }),
               const SizedBox(height: 12),
-              LocationInput(),
+              // LocationInput(),
               const SizedBox(height: 12),
               ElevatedButton.icon(
                 onPressed: savePlace,
